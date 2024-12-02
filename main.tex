@@ -1,0 +1,140 @@
+\documentclass{article}
+
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{url}
+
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+
+
+\title{Abgabe 1 für Computergestützte Methoden}
+\author{Gruppe 54, Can Yavuz (4270926), Malte Böker (4313672), Altan Ulusinan (4359894)}
+\date{2. Dezember 2024 }
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Der zentrale Grenzwertsatz}
+
+Der zentrale Grenzwertsatz (ZGS) ist ein fundamentales Resultat der Wahrscheinlichkeitstheorie, das die Verteilung von Summen unabhängiger, identisch verteilter ($i.i.d.$) Zufallsvariablen (ZV) beschreibt. Er besagt, dass unter bestimmten Voraussetzungen die Summe einer großen Anzahl solcher ZV annähernd normalverteilt ist, unabhängig von der Verteilung der einzelnen ZV. Dies ist besonders nützlich, da die Normalverteilung gut untersucht und mathematisch handhabbar ist.
+
+
+
+\subsection{Aussage}
+
+Sei \( X_1 \), \( X_2 \),...,\( X_n \) eine Folge von $i.i.d.$ ZV mit dem Erwartungswert $\mu = \mathbb{E}(X_i)$ und der Varianz $\sigma^2$ = Var($X_i$), wobei 0 < $\sigma^2 < \infty$ gelte. Dann konvergiert die standardisierte Summe \( Z_n \) dieser ZV für n $\to \infty$ in Verteilung gegen eine Standardnormalverteilung:\footnote{Der Zentrale Grenzwertsatz hat verschiedene Verallgemeinerungen. Eine davon ist der \textbf{Lindeberg-Feller-Zentrale-Grenzwertsatz}\cite[Seite 328]{Wahrscheinlichkeitstheorie} der schwächere Bedingungen an die Unabhängigkeit und die identische Verteilung der ZV stellt.}
+\begin{equation}
+\label{eq:zn}
+ Z_n = \frac{\sum_{i=1}^n X_i - \textit{n}\mu}{\sigma\sqrt{n}}\overset{d}{\longrightarrow} \mathcal{N}(0,1).
+\end{equation}
+Das bedeutet, dass für große \textit{n} die Summer der ZV näherungsweise normalverteilt ist mit Erwartungswert $\textit{n} \mu$ und Varianz $\textit{n}\sigma^2$:
+\begin{equation}
+\label{eq:sum}
+    \sum_{i=1}^n X_i \sim \mathcal{N}(\textit{n}\mu, \textit{n}\sigma^2).
+\end{equation}
+
+\subsection{Erklärung der Standardisierung}
+
+Um die Summe der ZV in eine Standardnormalverteilung zu transformieren, subtrahiert man den Erwartungswert $\textit{n}\mu$ und teilt durch die Standardabweichung $\sigma\sqrt{n}$. Dies führt zu der obigen formel $\eqref{eq:zn}$. Die Darstellung $\eqref{eq:sum}$ ist für $\textit{n}\rightarrow\infty$ nicht wohldefiniert.
+
+\subsection{Anwendungen}
+
+Der ZGS wird in vielen Bereichen der Statistik und der Wahrscheinlichkeitstheorie angewendet. Typische Beispiele sind:
+\begin{itemize}
+    \item Schätzen von Mittelwerten
+    \item Hypothesentests
+\end{itemize}
+
+
+
+\newpage
+\section{Bearbeitung zur Aufgabe 1}
+\subsection{Datenverarbeitung}
+In diesem Datensatz sind Information zu einem Fahrradverleih enthalten sowie auch Daten zum Wetter. Diese Daten wurden in dem Zeitraum vom 1. Januar 2023 bis zum 31.12 2023 erfasst. Zeile A1 enthält die Attributennamen group, station, date, day\_of\_year, day\_of\_week, month\_of\_year, precipitation, windspeed, min\_temperature, average\_temperature, max\_temperature und count.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{datensatzexcel.jpeg}
+    \caption{Excel Tabelle}
+    \label{fig:enter-label}
+\end{figure}
+
+Zur Ermittlung der höchsten mittleren Temperatur an der Station „E 51 St \& 1 Ave“ haben wir den in Excel bestehenden Datensatz anhand einer Pivot-Tabelle anschaulicher gemacht. 
+Die Pivot-Tabelle enthält neben dem Filter „Group: 54“ die Zeilen „month\_of\_year“ und die Spaltenwerte „Maximum von: average\_temperature“.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Höchste mittlere Temp. in Grad Celsius.jpeg}
+    \caption{Höchste mittlere Temperatur in Grad Celius}
+    \label{fig:enter-label}
+\end{figure}
+\newpage
+Damit lässt sich sowohl die maximale durchschnittliche Temperatur jeden Monats
+an dieser Station erkennen als auch das Maximum dieser Werte feststellen. 
+Die höchste maximale durchschnittliche Temperatur von \textbf{83 Grad Fahrenheit} wurde im Juli gemessen. Zur Umrechnung in Grad Celsius haben wir folgende Funktion verwendet:
+\[
+\texttt{=UMWANDELN(PIVOTDATENZUORDNEN("average\_temperature";\$A\$3);"F";"C")}
+\]
+Das Ergebnis dieser Funktion lautet \textbf{28,33 Grad Celsius}.
+
+\subsection{Datenhaltung}
+\subsubsection{Datenbankschema}
+
+\textbf{1. Normalform (1NF) in SQL: }
+\\
+CREATE  TABLE nfeins ( \\
+group INTEGER,\\ 
+station TEXT,\\
+date TEXT,\\
+day\_of\_year INTEGER,\\
+day\_of\_week INTEGER,\\
+month\_of\_week INTEGER,\\
+windspeed REAL,\\
+min\_temperature INTEGER,\\
+average\_temperature INTEGER,\\
+max\_temperature INTEGER,\\
+count INTEGER,\\
+);\\
+\\
+\textbf{2. Normalform (2NF): }
+Auftrennung in mehrere Tabellen plus Fremdschlüssel-Beziehungen mit passenden Abhängigkeiten.
+
+\subsubsection{Datenimport}
+
+Die Datei wird importiert indem man, wie zuvor angegeben, die Tabelle erstellt und danach die Datei mit der .import Anweisung in SQlite hinzufügt. Zu beachten ist, dass man auf .mode csv umstellt um die Datei zu laden. 
+
+\subsubsection{SQL-Abfrage}
+
+Um nach der höchsten mittleren Temperatur zu fragen haben wir diesen Befehl benutzt:
+\\
+SELECT MAX(CAST(average\_temperature AS REAL)-32)*5/9 \\
+FROM nfeins \\
+WHERE group = 54\\
+;\\
+
+
+
+
+
+\newpage
+\section{Quellenverzeichnis}
+
+\begin{itemize}
+    \item \textbf{Moodle} https://moodle.uni-bielefeld.de/course/view.php?id=6748
+    \item \textbf{SqLite} https://www.sqlite.org/index.html
+\end{itemize}
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
